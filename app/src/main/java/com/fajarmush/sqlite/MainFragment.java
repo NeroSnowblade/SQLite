@@ -1,7 +1,6 @@
 package com.fajarmush.sqlite;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,85 +17,84 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MainFragment extends Fragment implements View.OnClickListener, RecycleViewAdapter.OnUserClickListener {
+
     RecyclerView recyclerView;
-    EditText editName, editAge;
+    EditText edtName, edtAge;
     Button btnSubmit;
     RecyclerView.LayoutManager layoutManager;
     Context context;
     List<PersonBean> listPersonInfo;
 
     public MainFragment() {
+        // Required empty public constructor
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         context = getActivity();
-        recyclerView = view.findViewById(R.id.recylceView);
+        recyclerView = view.findViewById(R.id.recycleView);
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
-
-        editAge = view.findViewById(R.id.editAge);
-        editName = view.findViewById(R.id.editName);
+        edtName = view.findViewById(R.id.editName);
+        edtAge = view.findViewById(R.id.editAge);
         btnSubmit = view.findViewById(R.id.btnSubmit);
-
         btnSubmit.setOnClickListener(this);
-
-        setupRecycleView();
+        setupRecyclerView();
     }
 
-    private void setupRecycleView() {
+    private void setupRecyclerView() {
         DatabaseHelper db = new DatabaseHelper(context);
         listPersonInfo = db.selectUserData();
-
-        RecycleViewAdapter adapter = new RecycleViewAdapter(context, listPersonInfo, this);
+        RecycleViewAdapter adapter = new
+                RecycleViewAdapter(context, listPersonInfo, this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btnSubmit) {
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnSubmit) {
             DatabaseHelper db = new DatabaseHelper(context);
             PersonBean currentPerson = new PersonBean();
             String btnStatus = btnSubmit.getText().toString();
-
             if (btnStatus.equals("Submit")) {
-                currentPerson.setName(editName.getText().toString());
-                currentPerson.setAge(Integer.parseInt(editAge.getText().toString()));
+                currentPerson.setName(edtName.getText().toString());
+                currentPerson.setAge(Integer.parseInt(edtAge.getText().toString()));
                 db.insert(currentPerson);
             }
             if (btnStatus.equals("Update")) {
-                currentPerson.setName(editName.getText().toString());
-                currentPerson.setAge(Integer.parseInt(editAge.getText().toString()));
+                currentPerson.setName(edtName.getText().toString());
+                currentPerson.setAge(Integer.parseInt(edtAge.getText().toString()));
                 db.update(currentPerson);
             }
-            setupRecycleView();
-            editName.setText("");
-            editAge.setText("");
-            editName.setFocusable(true);
+            setupRecyclerView();
+            edtName.setText("");
+            edtAge.setText("");
+            edtName.setFocusable(true);
             btnSubmit.setText("Submit");
         }
     }
 
     @Override
     public void onUserClick(PersonBean currentPerson, String action) {
-        if(action.equals("Edit")) {
-            editName.setText(currentPerson.getName());
-            editName.setFocusable(false);
-            editAge.setText(currentPerson.getAge());
+        if (action.equals("Edit")) {
+
+            edtName.setText(currentPerson.getName());
+            edtName.setFocusable(false);
+            edtAge.setText(currentPerson.getAge() + "");
             btnSubmit.setText("Update");
         }
         if (action.equals("Delete")) {
             DatabaseHelper db = new DatabaseHelper(context);
             db.delete(currentPerson.getName());
-            setupRecycleView();
+            setupRecyclerView();
         }
     }
 }

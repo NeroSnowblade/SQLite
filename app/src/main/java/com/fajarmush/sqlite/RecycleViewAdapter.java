@@ -15,9 +15,14 @@ import java.util.List;
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.UserViewHolder> {
     Context context;
     OnUserClickListener listener;
-    List <PersonBean> listPersonInfo;
+    List<PersonBean> listPersonInfo;
 
-    public RecycleViewAdapter(Context context, List<PersonBean> listPersonInfo, MainFragment mainFragment) {
+    public RecycleViewAdapter(Context context, List<PersonBean>
+
+            listPersonInfo, OnUserClickListener listener) {
+        this.context = context;
+        this.listPersonInfo = listPersonInfo;
+        this.listener = listener;
     }
 
     public interface OnUserClickListener {
@@ -27,25 +32,26 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_row_item, parent, false);
+        View view =
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.user_row_item, parent, false);
         UserViewHolder userViewHolder = new UserViewHolder(view);
         return userViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecycleViewAdapter.UserViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserViewHolder holder, final int position) {
         final PersonBean currentPerson = listPersonInfo.get(position);
-        holder.cTxtName.setText(currentPerson.getName());
-        holder.cTxtAge.setText(currentPerson.getAge());
+        holder.ctxtName.setText(currentPerson.getName());
+        holder.ctxtAge.setText(currentPerson.getAge() + "");
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 listener.onUserClick(currentPerson, "Edit");
             }
         });
         holder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 listener.onUserClick(currentPerson, "Delete");
             }
         });
@@ -57,15 +63,15 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView cTxtAge, cTxtName;
+        TextView ctxtAge, ctxtName;
         ImageView imgDelete, imgEdit;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            cTxtAge = itemView.findViewById(R.id.cTxtAge);
-            cTxtName = itemView.findViewById(R.id.cTxtName);
+            ctxtAge = itemView.findViewById(R.id.cTxtAge);
+            ctxtName = itemView.findViewById(R.id.cTxtName);
             imgDelete = itemView.findViewById(R.id.imgDelete);
-            imgDelete = itemView.findViewById(R.id.imgEdit);
+            imgEdit = itemView.findViewById(R.id.imgEdit);
         }
     }
 }

@@ -4,7 +4,8 @@ public class PersonBean {
     String name;
     int age;
 
-    public PersonBean() {}
+    public PersonBean() {
+    }
 
     public String getName() {
         return name;

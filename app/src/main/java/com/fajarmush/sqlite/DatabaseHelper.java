@@ -10,16 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "UserInfo";
-    static final String TABLE_NAME = "tbl_user";
-    static final String KEY_NAME = "_id";
-    static final String KEY_AGE = "Title";
-
-    // Table Query
-    private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + KEY_NAME + "TEXT PRIMARY KEY,"
-            + KEY_AGE + "INTEGER" + ");";
+    private static final String TABLE_NAME = "tbl_user";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_AGE = "age";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -27,12 +22,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE);
+        String createUserTable = "Create Table " + TABLE_NAME + "(" + KEY_NAME + " TEXT PRIMARY KEY," + KEY_AGE + " INTEGER" + ")";
+        db.execSQL(createUserTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        String sql = ("drop table if exists " + TABLE_NAME);
+        db.execSQL(sql);
         onCreate(db);
     }
 
@@ -41,22 +38,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, personBean.getName());
         values.put(KEY_AGE, personBean.getAge());
-
         db.insert(TABLE_NAME, null, values);
     }
 
     public List<PersonBean> selectUserData() {
         ArrayList<PersonBean> userList = new ArrayList<PersonBean>();
-
         SQLiteDatabase db = getReadableDatabase();
         String[] columns = {KEY_NAME, KEY_AGE};
-
         Cursor c = db.query(TABLE_NAME, columns, null, null, null, null, null);
-
         while (c.moveToNext()) {
             String name = c.getString(0);
             int age = c.getInt(1);
-
             PersonBean personBean = new PersonBean();
             personBean.setName(name);
             personBean.setAge(age);
@@ -71,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, whereClause, null);
     }
 
-    public void  update(PersonBean personBean) {
+    public void update(PersonBean personBean) {
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_AGE, personBean.getAge());
